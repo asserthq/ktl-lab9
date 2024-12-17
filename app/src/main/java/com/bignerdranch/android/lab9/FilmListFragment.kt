@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,39 +20,56 @@ class FilmListFragment: Fragment() {
         ViewModelProvider(this)[FilmListViewModel::class.java]
     }
 
-    /*override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }*/
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_film_list, container, false)
-        filmRecyclerView = view.findViewById(R.id.film_recycler_view)
-        filmRecyclerView.layoutManager = LinearLayoutManager(context)
+        this.filmRecyclerView = view.findViewById(R.id.film_recycler_view)
+        this.filmRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        updateUI()
-
+        this.filmRecyclerView.adapter = adapter
         return view
     }
 
-    private fun updateUI() {
-        val crimes = filmListViewModel.films
-        adapter = FilmAdapter(crimes)
-        filmRecyclerView.adapter = adapter
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        filmListViewModel.filmListLiveData.observe(viewLifecycleOwner)
+        { galleryItems -> galleryItems?.let {
+                updateUI(galleryItems)
+            }
+        }
+    }
+
+    private fun updateUI(galleryItems: List<Film>) {
+        adapter = FilmAdapter(galleryItems)
+        this.filmRecyclerView.adapter = adapter
     }
 
     private inner class FilmHolder(view: View): RecyclerView.ViewHolder(view) {
 
         private lateinit var film: Film
+        private var filmRepository: FilmRepository = FilmRepository.get()
+
         private val nameTextView: TextView = itemView.findViewById(R.id.film_name)
         private val yearTextView: TextView = itemView.findViewById(R.id.film_year)
+        private val watchedCheck: CheckBox = itemView.findViewById(R.id.check_ended)
+
+        init {
+            watchedCheck.setOnCheckedChangeListener { _, isChecked ->
+                if (film.watched != isChecked) {
+                    film.watched = isChecked
+                    filmRepository.updateFilm(film)
+                }
+            }
+        }
+
         fun bind(film: Film) {
             this.film = film
             nameTextView.text = this.film.title
-            yearTextView.text = this.film.date.toString()
+            yearTextView.text = this.film.date.year.toString()
+            watchedCheck.isChecked = this.film.watched
         }
     }
 
