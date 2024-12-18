@@ -1,12 +1,12 @@
 package com.bignerdranch.android.lab9
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import java.time.LocalDate
 
 class AddActivity : AppCompatActivity() {
 
@@ -42,9 +42,15 @@ class AddActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                film.date = LocalDate.of(s.toString().toInt(), 1, 1)
+                film.year = s.toString()
             }
         })
+
+        val searchButton: Button = findViewById(R.id.search_button)
+        searchButton.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+        }
 
         val addButton: Button = findViewById(R.id.add_button)
         addButton.setOnClickListener {
