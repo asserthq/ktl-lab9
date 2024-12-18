@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import api.FilmResponse
 import api.OmdbApi
-import api.OmdbResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,7 +43,6 @@ class OmdbFetcher {
             ) {
                 Log.d(TAG, "Response received ${response.raw()}")
 
-                //val filmResponse: FilmResponse? = omdbResponse?.Search
                 var films: List<Film> = response.body()?.films?: mutableListOf()
                 films = films.filterNot {
                         it.posterUrl.isBlank()
@@ -56,4 +54,5 @@ class OmdbFetcher {
         })
         return responseLiveData
     }
+
 }

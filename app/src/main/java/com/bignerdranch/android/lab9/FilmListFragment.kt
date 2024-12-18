@@ -1,15 +1,20 @@
 package com.bignerdranch.android.lab9
 
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 class FilmListFragment: Fragment() {
 
@@ -54,6 +59,7 @@ class FilmListFragment: Fragment() {
 
         private val nameTextView: TextView = itemView.findViewById(R.id.film_name)
         private val yearTextView: TextView = itemView.findViewById(R.id.film_year)
+        private val posterImageView: ImageView = itemView.findViewById(R.id.film_poster)
         private val watchedCheck: CheckBox = itemView.findViewById(R.id.check_ended)
 
         init {
@@ -71,6 +77,13 @@ class FilmListFragment: Fragment() {
             yearTextView.text = this.film.year
             watchedCheck.isChecked = this.film.watched
         }
+
+        fun bindImage() {
+            Picasso.get()
+                .load(film.posterUrl)
+                .placeholder(R.drawable.icon_film_placeholder)
+                .into(posterImageView)
+        }
     }
 
     private inner class FilmAdapter(var films: List<Film>): RecyclerView.Adapter<FilmHolder>() {
@@ -85,9 +98,12 @@ class FilmListFragment: Fragment() {
 
         override fun onBindViewHolder(holder: FilmHolder, position: Int) {
             val film = films[position]
+
             holder.apply {
                 holder.bind(film)
             }
+
+            holder.bindImage()
         }
     }
 
