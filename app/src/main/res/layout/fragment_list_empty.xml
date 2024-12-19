@@ -16,7 +16,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon_film_placeholder" />
+        app:srcCompat="@drawable/empty_list_placeholder" />
 
     <TextView
         android:id="@+id/empty_text"
